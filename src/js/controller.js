@@ -52,7 +52,9 @@ const controlSearchResults = async function () {
     // 4) Render initial pagination buttons
     paginationView.render(model.state.search);
   } catch (err) {
-    console.log(err);
+    resultsView.renderError(
+      'Request took too long, please refresh the page :('
+    );
   }
 };
 
