@@ -1,18 +1,33 @@
 /* Response */
-export type RecipeResponse = FailResponse | SuccessResponse;
+export type RecipeResponse = RecipeFailResponse | RecipeSuccessResponse;
 
-export interface FailResponse {
+export interface RecipeFailResponse {
   status: "fail";
   message: string;
 }
 
-export interface SuccessResponse {
+export interface RecipeSuccessResponse {
   status: "success";
   data: RecipeData;
 }
 
-/* Recipe */
-export interface RecipeData {
+export interface RawSearchRecipeResponse {
+  status: "success";
+  results: number;
+  data: {
+    recipes: Pick<RawRecipe, "id" | "image_url" | "publisher" | "title">[];
+  };
+}
+
+export interface SearchRecipeResponse {
+  id: string;
+  title: string;
+  publisher: string;
+  image: string;
+}
+
+export /* Recipe */
+interface RecipeData {
   recipe: RawRecipe;
 }
 

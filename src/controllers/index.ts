@@ -1,5 +1,5 @@
 import * as model from "@/models";
-import { recipeView } from "@/views";
+import { recipeView, searchView } from "@/views";
 
 import type { Recipe } from "@/types/recipe.types";
 
@@ -18,7 +18,17 @@ const controlRecipes = async () => {
   }
 };
 
+const controlSearchResults = async () => {
+  try {
+    const query = searchView.getQuery();
+    if (!query) return;
+
+    await model.loadSearchResults(query);
+  } catch (error) {}
+};
+
 const init = () => {
   recipeView.addHandlerRender(controlRecipes);
+  searchView.addHandlerSearch(controlSearchResults);
 };
 init();
