@@ -6,6 +6,7 @@ class RecipeView {
   #parentEl = document.querySelector(".recipe") as HTMLDivElement;
   #data: Partial<Recipe> = {};
   #errorMessage = "We could not find that recipe. please try another one!";
+  #successMessage = "TODO: add success message";
 
   render(data: Recipe) {
     this.#data = data;
@@ -30,6 +31,20 @@ class RecipeView {
         <div>
           <svg>
             <use href="icons.svg#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${msg}</p>
+      </div>
+    `;
+    this.#parentEl.innerHTML = markup;
+  }
+
+  renderMessage(msg: string = this.#successMessage) {
+    const markup = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="icons.svg#icon-smile"></use>
           </svg>
         </div>
         <p>${msg}</p>
