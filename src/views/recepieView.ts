@@ -1,57 +1,12 @@
 import Fraction from "fraction.js";
 
-import { Ingredient, Recipe } from "@/types/recipe.types";
+import View from "@/views/View";
+import type { Ingredient, Recipe } from "@/types/recipe.types";
 
-class RecipeView {
-  #parentEl = document.querySelector(".recipe") as HTMLDivElement;
-  #data: Partial<Recipe> = {};
-  #errorMessage = "We could not find that recipe. please try another one!";
-  #successMessage = "TODO: add success message";
-
-  render(data: Recipe) {
-    this.#data = data;
-    const markup = this.#generateMarkup();
-    this.#parentEl.innerHTML = markup;
-  }
-
-  renderSpinner() {
-    const markup = `
-      <div class="spinner">
-      <svg>
-      <use href="icons.svg#icon-loader"></use>
-      </svg>
-      </div>
-    `;
-    this.#parentEl.innerHTML = markup;
-  }
-
-  renderError(msg: string = this.#errorMessage) {
-    const markup = `
-      <div class="error">
-        <div>
-          <svg>
-            <use href="icons.svg#icon-alert-triangle"></use>
-          </svg>
-        </div>
-        <p>${msg}</p>
-      </div>
-    `;
-    this.#parentEl.innerHTML = markup;
-  }
-
-  renderMessage(msg: string = this.#successMessage) {
-    const markup = `
-      <div class="message">
-        <div>
-          <svg>
-            <use href="icons.svg#icon-smile"></use>
-          </svg>
-        </div>
-        <p>${msg}</p>
-      </div>
-    `;
-    this.#parentEl.innerHTML = markup;
-  }
+class RecipeView extends View<Recipe> {
+  parentEl = document.querySelector(".recipe") as HTMLDivElement;
+  errorMessage = "We could not find that recipe. please try another one!";
+  successMessage = "TODO: add success message";
 
   addHandlerRender(handler: () => void) {
     ["hashchange", "load"].forEach((ev) =>
@@ -59,16 +14,16 @@ class RecipeView {
     );
   }
 
-  #generateMarkup() {
+  generateMarkup() {
     return `
       <figure class="recipe__fig">
           <img 
-            src="${this.#data.image}"
-            alt="${this.#data.title}"
+            src="${this.data.image}"
+            alt="${this.data.title}"
             class="recipe__img"
           />
           <h1 class="recipe__title">
-            <span>${this.#data.title}</span>
+            <span>${this.data.title}</span>
           </h1>
         </figure>
 
@@ -78,7 +33,7 @@ class RecipeView {
               <use href="icons.svg#icon-clock"></use>
             </svg>
             <span class="recipe__info-data recipe__info-data--minutes">${
-              this.#data.cookingTime
+              this.data.cookingTime
             }</span>
             <span class="recipe__info-text">minutes</span>
           </div>
@@ -87,7 +42,7 @@ class RecipeView {
               <use href="icons.svg#icon-users"></use>
             </svg>
             <span class="recipe__info-data recipe__info-data--people">${
-              this.#data.servings
+              this.data.servings
             }</span>
             <span class="recipe__info-text">servings</span>
 
@@ -120,7 +75,7 @@ class RecipeView {
         <div class="recipe__ingredients">
         <h2 class="heading--2">Recipe ingredients</h2>
         <ul class="recipe__ingredient-list">
-          ${this.#data.ingredients!.map(this.#generateIngredient).join("")}
+          ${this.data.ingredients!.map(this.generateIngredient).join("")}
         </div>
 
         <div class="recipe__directions">
@@ -128,13 +83,13 @@ class RecipeView {
           <p class="recipe__directions-text">
             This recipe was carefully designed and tested by
             <span class="recipe__publisher">${
-              this.#data.publisher
+              this.data.publisher
             }</span>. Please check out
             directions at their website.
           </p>
           <a
             class="btn--small recipe__btn"
-            href="${this.#data.sourceUrl}"
+            href="${this.data.sourceUrl}"
             target="_blank"
           >
             <span>Directions</span>
@@ -146,7 +101,7 @@ class RecipeView {
     `;
   }
 
-  #generateIngredient(ing: Ingredient) {
+  private generateIngredient(ing: Ingredient) {
     return `
       <li class="recipe__ingredient">
         <svg class="recipe__icon">
