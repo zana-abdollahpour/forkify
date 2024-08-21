@@ -5,6 +5,7 @@ import { Ingredient, Recipe } from "@/types/recipe.types";
 class RecipeView {
   #parentEl = document.querySelector(".recipe") as HTMLDivElement;
   #data: Partial<Recipe> = {};
+  #errorMessage = "We could not find that recipe. please try another one!";
 
   render(data: Recipe) {
     this.#data = data;
@@ -18,6 +19,20 @@ class RecipeView {
       <svg>
       <use href="icons.svg#icon-loader"></use>
       </svg>
+      </div>
+    `;
+    this.#parentEl.innerHTML = markup;
+  }
+
+  renderError(msg: string = this.#errorMessage) {
+    const markup = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="icons.svg#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${msg}</p>
       </div>
     `;
     this.#parentEl.innerHTML = markup;

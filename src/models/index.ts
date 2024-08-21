@@ -26,7 +26,6 @@ export const loadRecipe = async (id: Recipe["id"]) => {
 
     state.recipe = recipe;
   } catch (error) {
-    // TODO: implement error handling
-    console.error(`💥💥💥💥 ${error}`);
+    throw error;
   }
 };
