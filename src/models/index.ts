@@ -1,3 +1,5 @@
+import { API_URL } from "@/config";
+import { getJSON } from "@/lib";
 import type { Recipe, RecipeResponse } from "@/types/recipe.types";
 import type { State } from "@/types/state.types";
 
@@ -7,13 +9,8 @@ export const state: State = {
 
 export const loadRecipe = async (id: Recipe["id"]) => {
   try {
-    const res = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
-    );
-    const data: RecipeResponse = await res.json();
-
-    if (data.status === "fail")
-      throw new Error(`${data.message} (${res.status})`);
+    const data = await getJSON<RecipeResponse>(`${API_URL}/${id}`);
+    if (data.status === "fail") throw new Error(data.message);
 
     const rawRecipe = data.data.recipe;
     const recipe: Recipe = {
@@ -29,6 +26,7 @@ export const loadRecipe = async (id: Recipe["id"]) => {
 
     state.recipe = recipe;
   } catch (error) {
-    alert;
+    // TODO: implement error handling
+    console.error(`💥💥💥💥 ${error}`);
   }
 };
