@@ -7,6 +7,9 @@ export default abstract class View<T> {
   protected data: Partial<T> = {};
 
   render(data: T) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
+
     this.data = data;
     const markup = this.generateMarkup();
     this.parentEl.innerHTML = markup;

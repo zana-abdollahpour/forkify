@@ -1,5 +1,5 @@
 import * as model from "@/models";
-import { recipeView, searchView } from "@/views";
+import { recipeView, searchView, resultsView } from "@/views";
 
 import type { Recipe } from "@/types/recipe.types";
 
@@ -20,10 +20,14 @@ const controlRecipes = async () => {
 
 const controlSearchResults = async () => {
   try {
+    resultsView.renderSpinner();
+
     const query = searchView.getQuery();
     if (!query) return;
 
     await model.loadSearchResults(query);
+
+    resultsView.render(model.state.search.results);
   } catch (error) {}
 };
 
