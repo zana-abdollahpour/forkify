@@ -23,6 +23,12 @@ class RecipeView {
     this.#parentEl.innerHTML = markup;
   }
 
+  addHandlerRender(handler: () => void) {
+    ["hashchange", "load"].forEach((ev) =>
+      window.addEventListener(ev, handler)
+    );
+  }
+
   #generateMarkup() {
     return `
       <figure class="recipe__fig">

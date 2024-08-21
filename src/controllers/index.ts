@@ -3,7 +3,7 @@ import { recipeView } from "@/views";
 
 import type { Recipe } from "@/types/recipe.types";
 
-const showRecipe = async () => {
+const controlRecipes = async () => {
   try {
     const id = window.location.hash.slice(1);
     if (!id) return;
@@ -18,4 +18,7 @@ const showRecipe = async () => {
   }
 };
 
-["hashchange", "load"].forEach((ev) => window.addEventListener(ev, showRecipe));
+const init = () => {
+  recipeView.addHandlerRender(controlRecipes);
+};
+init();
