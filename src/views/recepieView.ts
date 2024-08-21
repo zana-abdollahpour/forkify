@@ -1,6 +1,6 @@
 import Fraction from "fraction.js";
 
-import { Recipe } from "@/types/recipe.types";
+import { Ingredient, Recipe } from "@/types/recipe.types";
 
 class RecipeView {
   #parentEl = document.querySelector(".recipe") as HTMLDivElement;
@@ -84,26 +84,7 @@ class RecipeView {
         <div class="recipe__ingredients">
         <h2 class="heading--2">Recipe ingredients</h2>
         <ul class="recipe__ingredient-list">
-          ${this.#data
-            .ingredients!.map(
-              (ing) => `
-              <li class="recipe__ingredient">
-                <svg class="recipe__icon">
-                  <use href="icons.svg#icon-check"></use>
-                </svg>
-                <div class="recipe__quantity">${
-                  ing.quantity
-                    ? new Fraction(ing.quantity).toFraction(true)
-                    : ""
-                }</div>
-                <div class="recipe__description">
-                  <span class="recipe__unit">${ing.unit}</span>
-                  ${ing.description}
-                </div>
-              </li>
-            `
-            )
-            .join("")}
+          ${this.#data.ingredients!.map(this.#generateIngredient).join("")}
         </div>
 
         <div class="recipe__directions">
@@ -126,6 +107,23 @@ class RecipeView {
             </svg>
           </a>
         </div>
+    `;
+  }
+
+  #generateIngredient(ing: Ingredient) {
+    return `
+      <li class="recipe__ingredient">
+        <svg class="recipe__icon">
+          <use href="icons.svg#icon-check"></use>
+        </svg>
+        <div class="recipe__quantity">${
+          ing.quantity ? new Fraction(ing.quantity).toFraction(true) : ""
+        }</div>
+        <div class="recipe__description">
+          <span class="recipe__unit">${ing.unit}</span>
+          ${ing.description}
+        </div>
+      </li>
     `;
   }
 }
