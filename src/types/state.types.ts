@@ -5,5 +5,6 @@ export interface State {
   search: {
     query: string;
     results: SearchRecipeResponse[];
+    page: number;
   };
 }

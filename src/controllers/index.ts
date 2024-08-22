@@ -1,5 +1,5 @@
 import * as model from "@/models";
-import { recipeView, searchView, resultsView } from "@/views";
+import { recipeView, searchView, resultsView, paginationView } from "@/views";
 
 import type { Recipe } from "@/types/recipe.types";
 
@@ -27,12 +27,20 @@ const controlSearchResults = async () => {
 
     await model.loadSearchResults(query);
 
-    resultsView.render(model.state.search.results);
+    resultsView.render(model.getSearchResultsPage());
+    paginationView.render(model.state.search);
   } catch (error) {}
+};
+
+const controlPagination = (page: number) => {
+  resultsView.render(model.getSearchResultsPage(page));
+
+  paginationView.render(model.state.search);
 };
 
 const init = () => {
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
 };
 init();
