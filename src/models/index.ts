@@ -8,7 +8,7 @@ import type {
 import type { State } from "@/types/state.types";
 
 export const state: State = {
-  recipe: {},
+  recipe: {} as Recipe,
   search: {
     query: "",
     results: [],
@@ -65,4 +65,12 @@ export const getSearchResultsPage = (page: number = state.search.page) => {
   const end = page * RESULTS_PER_PAGE;
 
   return state.search.results.slice(start, end);
+};
+
+export const updateServings = (newServings: number) => {
+  state.recipe.ingredients.forEach((ing) => {
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+  });
+
+  state.recipe.servings = newServings;
 };

@@ -54,7 +54,7 @@ export interface Recipe {
 }
 
 export interface Ingredient {
-  quantity: null | number;
+  quantity: number;
   unit: string;
   description: string;
 }

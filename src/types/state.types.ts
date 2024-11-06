@@ -1,7 +1,7 @@
 import type { Recipe, SearchRecipeResponse } from "@/types/recipe.types";
 
 export interface State {
-  recipe: Recipe | {};
+  recipe: Recipe;
   search: {
     query: string;
     results: SearchRecipeResponse[];
