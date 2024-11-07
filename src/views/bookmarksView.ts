@@ -6,6 +6,10 @@ class BookmarksView extends View<SearchRecipeResponse[]> {
   errorMessage = "No bookmarks yet.";
   successMessage = "TODO: add success message";
 
+  addHandlerRender(handler: () => void) {
+    window.addEventListener("load", handler);
+  }
+
   generateMarkup(): string {
     const id = window.location.hash.slice(1);
 

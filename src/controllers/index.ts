@@ -7,8 +7,6 @@ import {
   paginationView,
 } from "@/views";
 
-import type { Recipe } from "@/types/recipe.types";
-
 const controlRecipes = async () => {
   try {
     const id = window.location.hash.slice(1);
@@ -17,11 +15,12 @@ const controlRecipes = async () => {
     recipeView.renderSpinner();
 
     resultsView.update(model.getSearchResultsPage());
+
     bookmarksView.update(model.state.bookmarks);
 
     await model.loadRecipe(id);
 
-    recipeView.render(model.state.recipe as Recipe);
+    recipeView.render(model.state.recipe);
   } catch (error) {
     recipeView.renderError();
   }
@@ -59,7 +58,13 @@ const controlAddBookmark = () => {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlBookmarks = () => {
+  bookmarksView.render(model.state.bookmarks);
+};
+
 const init = () => {
+  bookmarksView.addHandlerRender(controlBookmarks);
+
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);

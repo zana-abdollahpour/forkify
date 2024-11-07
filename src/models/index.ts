@@ -1,4 +1,4 @@
-import { API_URL, RESULTS_PER_PAGE } from "@/config";
+import { API_URL, RESULTS_PER_PAGE, BOOKMARKS_KEY } from "@/config";
 import { getJSON } from "@/lib";
 import type {
   Recipe,
@@ -81,14 +81,33 @@ export const updateServings = (newServings: number) => {
   state.recipe.servings = newServings;
 };
 
+const persistBookmarks = () => {
+  localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(state.bookmarks));
+};
+
+const loadPersistedBookmarks = () => {
+  const bookmarks = localStorage.getItem(BOOKMARKS_KEY);
+  if (bookmarks) state.bookmarks = JSON.parse(bookmarks);
+};
+
 export const addBookmark = (recipe: Recipe) => {
   state.bookmarks.push(recipe);
 
   if (recipe.id === state.recipe.id) state.recipe.isBookmarked = true;
+
+  persistBookmarks();
 };
 
 export const deleteBookmark = (id: Recipe["id"]) => {
   const idx = state.bookmarks.findIndex((bookmark) => bookmark.id === id);
   state.bookmarks.splice(idx, 1);
+
   if (id === state.recipe.id) state.recipe.isBookmarked = false;
+
+  persistBookmarks();
 };
+
+const init = () => {
+  loadPersistedBookmarks();
+};
+init();
