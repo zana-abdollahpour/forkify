@@ -40,6 +40,7 @@ export interface RawRecipe {
   servings: number;
   cooking_time: number;
   ingredients: Ingredient[];
+  key?: string;
 }
 
 export interface Recipe {

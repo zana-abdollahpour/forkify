@@ -7,6 +7,7 @@ import {
   addRecipeView,
   paginationView,
 } from "@/views";
+import { MODAL_CLOSE_SEC } from "@/config";
 
 const controlRecipes = async () => {
   try {
@@ -63,11 +64,23 @@ const controlBookmarks = () => {
   bookmarksView.render(model.state.bookmarks);
 };
 
-const controlAddRecipe = (
-  newRecipeData: Record<string, FormDataEntryValue>
-) => {
-  console.log(newRecipeData);
-  // TODO: upload data
+const controlAddRecipe = async (newRecipeData: FormData) => {
+  try {
+    addRecipeView.renderSpinner();
+
+    await model.uploadRecipe(newRecipeData);
+
+    recipeView.render(model.state.recipe);
+
+    addRecipeView.renderMessage();
+
+    setTimeout(() => {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
+  } catch (err) {
+    console.error("💥💥💥💥", err);
+    if (err instanceof Error) addRecipeView.renderError(err.message);
+  }
 };
 
 const init = () => {

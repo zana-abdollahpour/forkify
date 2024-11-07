@@ -1,8 +1,10 @@
-import { API_URL, RESULTS_PER_PAGE, BOOKMARKS_KEY } from "@/config";
-import { getJSON } from "@/lib";
+import { API_URL, API_KEY, RESULTS_PER_PAGE, BOOKMARKS_KEY } from "@/config";
+import { getJSON, sendJSON } from "@/lib";
 import type {
   Recipe,
+  RawRecipe,
   RecipeResponse,
+  RecipeSuccessResponse,
   RawSearchRecipeResponse,
 } from "@/types/recipe.types";
 import type { State } from "@/types/state.types";
@@ -17,23 +19,28 @@ export const state: State = {
   bookmarks: [],
 };
 
+const createRecipeObject = (data: RecipeSuccessResponse): Recipe => {
+  const rawRecipe = data.data.recipe;
+  const recipe = {
+    id: rawRecipe.id,
+    title: rawRecipe.title,
+    publisher: rawRecipe.publisher,
+    sourceUrl: rawRecipe.source_url,
+    image: rawRecipe.image_url,
+    servings: rawRecipe.servings,
+    cookingTime: rawRecipe.cooking_time,
+    ingredients: rawRecipe.ingredients,
+    ...(rawRecipe.key && { key: rawRecipe.key }),
+  };
+  return recipe;
+};
+
 export const loadRecipe = async (id: Recipe["id"]) => {
   try {
     const data = await getJSON<RecipeResponse>(`${API_URL}/${id}`);
     if (data.status === "fail") throw new Error(data.message);
 
-    const rawRecipe = data.data.recipe;
-    const recipe: Recipe = {
-      id: rawRecipe.id,
-      title: rawRecipe.title,
-      publisher: rawRecipe.publisher,
-      sourceUrl: rawRecipe.source_url,
-      image: rawRecipe.image_url,
-      servings: rawRecipe.servings,
-      cookingTime: rawRecipe.cooking_time,
-      ingredients: rawRecipe.ingredients,
-    };
-    state.recipe = recipe;
+    state.recipe = createRecipeObject(data);
 
     if (state.bookmarks.some((bookmark) => bookmark.id === id))
       state.recipe.isBookmarked = true;
@@ -105,6 +112,53 @@ export const deleteBookmark = (id: Recipe["id"]) => {
   if (id === state.recipe.id) state.recipe.isBookmarked = false;
 
   persistBookmarks();
+};
+
+export const uploadRecipe = async (newRecipe: FormData) => {
+  try {
+    const title = String(newRecipe.get("title")!);
+    const source_url = String(newRecipe.get("sourceUrl")!);
+    const image_url = String(newRecipe.get("image")!);
+    const publisher = String(newRecipe.get("publisher")!);
+    const cooking_time = Number(newRecipe.get("cookingTime")!);
+    const servings = Number(newRecipe.get("servings")!);
+
+    const recipeData = Object.fromEntries(newRecipe);
+    const ingredients = Object.entries(recipeData)
+      .filter((entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
+      .map((ing) => {
+        const ingArray = String(ing[1]).replace(/ /g, "").split(",");
+        if (ingArray.length !== 3) throw new Error("Wrong ingredient format");
+
+        const [quantity, unit, description] = ingArray;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+
+    const recipe: Omit<RawRecipe, "id" | "ingredients"> & {
+      ingredients: {
+        quantity: number | null;
+        unit: string;
+        description: string;
+      }[];
+    } = {
+      title,
+      source_url,
+      image_url,
+      publisher,
+      cooking_time,
+      servings,
+      ingredients,
+    };
+
+    const data = await sendJSON<RecipeSuccessResponse>(
+      `${API_URL}?key=${API_KEY}`,
+      recipe
+    );
+    state.recipe = createRecipeObject(data);
+    addBookmark(state.recipe);
+  } catch (err) {
+    throw err;
+  }
 };
 
 const init = () => {
