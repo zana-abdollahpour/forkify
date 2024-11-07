@@ -4,6 +4,7 @@ import {
   searchView,
   resultsView,
   bookmarksView,
+  addRecipeView,
   paginationView,
 } from "@/views";
 
@@ -62,6 +63,13 @@ const controlBookmarks = () => {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlAddRecipe = (
+  newRecipeData: Record<string, FormDataEntryValue>
+) => {
+  console.log(newRecipeData);
+  // TODO: upload data
+};
+
 const init = () => {
   bookmarksView.addHandlerRender(controlBookmarks);
 
@@ -72,5 +80,7 @@ const init = () => {
   searchView.addHandlerSearch(controlSearchResults);
 
   paginationView.addHandlerClick(controlPagination);
+
+  addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 init();
