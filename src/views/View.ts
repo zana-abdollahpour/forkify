@@ -16,9 +16,6 @@ export default abstract class View<T> {
   }
 
   update(data: T) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderError();
-
     this.data = data;
     const newMarkup = this.generateMarkup();
 

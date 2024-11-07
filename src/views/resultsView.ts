@@ -7,11 +7,15 @@ class ResultsView extends View<SearchRecipeResponse[]> {
   successMessage = "TODO: add success message";
 
   generateMarkup(): string {
+    const id = window.location.hash.slice(1);
+
     return this.data
       .map(
         (rec) => `
           <li class="preview">
-            <a class="preview__link" href="#${rec?.id}">
+            <a class="preview__link ${
+              rec?.id === id ? "preview__link--active" : ""
+            }" href="#${rec?.id}">
               <figure class="preview__fig">
                 <img src="${rec?.image}" alt="${rec?.title}" />
               </figure>
