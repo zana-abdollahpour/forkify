@@ -36,7 +36,6 @@ const controlSearchResults = async () => {
 
 const controlPagination = (page: number) => {
   resultsView.render(model.getSearchResultsPage(page));
-
   paginationView.render(model.state.search);
 };
 
@@ -45,10 +44,20 @@ const controlServings = (newServings: number) => {
   recipeView.update(model.state.recipe);
 };
 
+const controlAddBookmark = () => {
+  if (!model.state.recipe.isBookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+  console.log(model.state.bookmarks);
+  recipeView.update(model.state.recipe);
+};
+
 const init = () => {
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
+
   searchView.addHandlerSearch(controlSearchResults);
+
   paginationView.addHandlerClick(controlPagination);
 };
 init();

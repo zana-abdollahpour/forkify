@@ -7,4 +7,5 @@ export interface State {
     results: SearchRecipeResponse[];
     page: number;
   };
+  bookmarks: Recipe[];
 }

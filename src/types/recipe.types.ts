@@ -51,6 +51,7 @@ export interface Recipe {
   servings: number;
   cookingTime: number;
   ingredients: Ingredient[];
+  isBookmarked?: boolean;
 }
 
 export interface Ingredient {
