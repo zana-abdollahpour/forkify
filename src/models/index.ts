@@ -37,7 +37,9 @@ const createRecipeObject = (data: RecipeSuccessResponse): Recipe => {
 
 export const loadRecipe = async (id: Recipe["id"]) => {
   try {
-    const data = await getJSON<RecipeResponse>(`${API_URL}/${id}`);
+    const data = await getJSON<RecipeResponse>(
+      `${API_URL}/${id}?key=${API_KEY}`
+    );
     if (data.status === "fail") throw new Error(data.message);
 
     state.recipe = createRecipeObject(data);
@@ -55,7 +57,7 @@ export const loadSearchResults = async (query: string) => {
     state.search.query = query;
 
     const data = await getJSON<RawSearchRecipeResponse>(
-      `${API_URL}?search=${query}`
+      `${API_URL}?search=${query}&key=${API_KEY}`
     );
 
     state.search.results = data.data.recipes.map((rec) => ({
@@ -63,6 +65,7 @@ export const loadSearchResults = async (query: string) => {
       title: rec.title,
       publisher: rec.publisher,
       image: rec.image_url,
+      ...(rec.key && { key: rec.key }),
     }));
 
     state.search.page = 1;

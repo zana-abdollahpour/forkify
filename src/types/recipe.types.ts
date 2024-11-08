@@ -15,7 +15,10 @@ export interface RawSearchRecipeResponse {
   status: "success";
   results: number;
   data: {
-    recipes: Pick<RawRecipe, "id" | "image_url" | "publisher" | "title">[];
+    recipes: Pick<
+      RawRecipe,
+      "id" | "image_url" | "publisher" | "title" | "key"
+    >[];
   };
 }
 
@@ -24,6 +27,7 @@ export interface SearchRecipeResponse {
   title: string;
   publisher: string;
   image: string;
+  key?: string;
 }
 
 export /* Recipe */
@@ -53,6 +57,7 @@ export interface Recipe {
   cookingTime: number;
   ingredients: Ingredient[];
   isBookmarked?: boolean;
+  key?: string;
 }
 
 export interface Ingredient {
